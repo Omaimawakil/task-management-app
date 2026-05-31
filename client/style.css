@@ -1,0 +1,62 @@
+body{
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 30px;
+}
+
+h1{
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+input{
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    margin: 10px auto;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+button{
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+button:hover{
+    opacity: 0.9;
+}
+
+.task{
+    background: white;
+    max-width: 550px;
+    margin: 15px auto;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.task h3{
+    margin-top: 0;
+    color: #222;
+}
+
+.task p{
+    color: #555;
+    margin: 8px 0;
+}
+
+#tasks{
+    margin-top: 25px;
+}
+#addBtn{
+    display: block;
+    margin: 15px auto;
+}
