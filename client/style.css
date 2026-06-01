@@ -60,3 +60,18 @@ button:hover{
     display: block;
     margin: 15px auto;
 }
+
+.auth-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.logout-button{
+    text-align: center;
+    margin-top: 10px;
+}
+#auth-section h2{
+    text-align: center;
+}

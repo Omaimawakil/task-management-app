@@ -1,8 +1,88 @@
 const API = "http://localhost:5000/tasks";
+const registerBtn = document.getElementById("registerBtn");
+const loginBtn = document.getElementById("loginBtn");
+
+registerBtn.addEventListener("click", registerUser);
+loginBtn.addEventListener("click", loginUser);
+
+async function registerUser() {
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const res=await fetch("http://localhost:5000/auth/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name,
+      email,
+      password
+    })
+  });
+  if(!res.ok){
+    alert("Registeration failed");
+    return;
+  }
+  document.getElementById("name").value = "";
+document.getElementById("email").value = "";
+document.getElementById("password").value = "";
+
+  alert("Registration Successful");
+  
+  return;
+}
+
+async function loginUser() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const res = await fetch("http://localhost:5000/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email,
+      password
+    })
+  });
+   if(!res.ok){
+    alert("Login failed. Check email and Password");
+    return;
+   }
+  const data = await res.json();
+  
+  if(!data.token){
+    alert("Token not recieved from server");
+    return;
+  }
+
+  localStorage.setItem("token", data.token);
+  document.getElementById("email").value = "";
+document.getElementById("password").value = "";
+
+  alert("Login Successful");
+  loadTasks();
+}
 
 async function loadTasks() {
 
-    const response = await fetch(API);
+    const token = localStorage.getItem("token");
+    if(!token){
+        return;
+    }
+
+const response = await fetch(API, {
+    headers: {
+        Authorization:`Bearer ${token}`
+    }
+});
+if(!response.ok){
+    console.error("Failed to load tasks");
+    return;
+}
     const tasks = await response.json();
 
    document.getElementById("tasks").innerHTML =
@@ -33,16 +113,27 @@ async function addTask() {
     const description =
         document.getElementById("description").value;
 
-    await fetch(API,{
+    const token = localStorage.getItem("token");
+    if(!token){
+        alert("Please log in first");
+        return;
+    }
+
+    const  res =await fetch(API,{
         method:"POST",
         headers:{
-            "Content-Type":"application/json"
-        },
+    "Content-Type":"application/json",
+    Authorization:`Bearer ${token}`
+    },
         body:JSON.stringify({
             title,
             description
         })
     });
+    if(!res.ok){
+      alert("Failed to add task");
+      return;
+    }
     document.getElementById("title").value = "";
 document.getElementById("description").value = "";
 
@@ -55,10 +146,18 @@ async function editTask(id){
 
     if(!newTitle) return;
 
+    const token = localStorage.getItem("token");
+    if(!token){
+        alert("Please log in first");
+        return;
+    }
+
+
     await fetch(`${API}/${id}`,{
         method:"PUT",
         headers:{
-            "Content-Type":"application/json"
+            "Content-Type":"application/json",
+           Authorization:`Bearer ${token}`
         },
         body:JSON.stringify({
             title:newTitle
@@ -69,20 +168,34 @@ async function editTask(id){
 }
 
 async function deleteTask(id){
+    const token = localStorage.getItem("token");
+    if(!token){
+        alert("Please log in first");
+        return;
+    }
 
     await fetch(`${API}/${id}`,{
-        method:"DELETE"
+        method:"DELETE",
+    headers:{
+     Authorization:`Bearer ${token}`
+    },
     });
 
     loadTasks();
 }
 
 async function completeTask(id){
+    const token = localStorage.getItem("token");
+    if(!token){
+        alert("Please log in first");
+        return;
+    }
 
     await fetch(`${API}/${id}`,{
         method:"PUT",
         headers:{
-            "Content-Type":"application/json"
+            "Content-Type":"application/json",
+            Authorization:`Bearer ${token}`
         },
         body:JSON.stringify({
             status:"Completed"
@@ -91,5 +204,8 @@ async function completeTask(id){
 
     loadTasks();
 }
-
+function logout() {
+    localStorage.removeItem("token");
+    location.reload();
+}
 loadTasks();

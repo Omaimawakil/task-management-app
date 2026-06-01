@@ -5,7 +5,24 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+   <div id="auth-section">
+  <h2>Authentication</h2>
 
+  <input type="text" id="name" placeholder="Name">
+
+  <input type="email" id="email" placeholder="Email">
+
+  <input type="password" id="password" placeholder="Password">
+
+  <div class="auth-buttons">
+    <button id="registerBtn">Register</button>
+    <button id="loginBtn">Login</button>
+</div>
+
+<div class="logout-button">
+    <button onclick="logout()">Logout</button>
+</div>
+</div>
     <h1>Task Manager</h1>
 
     <input type="text" id="title" placeholder="Task Title">
@@ -18,6 +35,6 @@
     <div id="tasks"></div>
 
     <script src="script.js"></script>
-
+    
 </body>
 </html>
