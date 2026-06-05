@@ -10,7 +10,7 @@ async function registerUser() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  const res=await fetch("http://localhost:5000/auth/register", {
+  const res=await fetch("https://task-management-app-ayny.onrender.com", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -38,7 +38,7 @@ async function loginUser() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  const res = await fetch("http://localhost:5000/auth/login", {
+  const res = await fetch("https://task-management-app-ayny.onrender.com", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
