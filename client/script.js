@@ -1,4 +1,4 @@
-const API = "http://localhost:5000/tasks";
+const API = "https://task-management-app-ayny.onrender.com/tasks"
 const registerBtn = document.getElementById("registerBtn");
 const loginBtn = document.getElementById("loginBtn");
 
