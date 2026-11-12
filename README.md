@@ -2,7 +2,8 @@
 
 A simple yet functional Task Management Application designed to help users organize, manage, and track their daily tasks through a clean and user-friendly interface.
 
-## Live Demo: https://taskmanager-012.netlify.app/
+## Live Demo
+https://taskmanager-012.netlify.app/
 
 ## Features
 
