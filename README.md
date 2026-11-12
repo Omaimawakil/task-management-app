@@ -79,6 +79,7 @@ Start the backend using its configured entry point.
 
 ## Project Structure
 
+```text
 task-management-app/
 │
 ├── client/
