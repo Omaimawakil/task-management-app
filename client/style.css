@@ -1,4 +1,4 @@
-/* ===== GENERAL ===== */
+/* ===== GENERAL STYLING ===== */
 * {
     margin: 0;
     padding: 0;
@@ -7,13 +7,13 @@
 
 body {
     font-family: 'Segoe UI', sans-serif;
-    background: #f0eada;
-    color: #3f2a47;
+    background-color: #E2E5E8;
+    color: #1E2A38;
     min-height: 100vh;
     padding: 25px 20px 50px;
 }
 
-/* ===== TOP BAR ===== */
+/* ===== TOP NAVIGATION ===== */
 .top-bar {
     max-width: 700px;
     margin: 0 auto 35px;
@@ -25,22 +25,21 @@ body {
 }
 
 #userStatus {
-    color: #75677a;
+    color: #536170;
 }
 
 .nav-btn {
-    background: #fffdf8;
-    color: #3f2a47;
+    background-color: #1E2A38;
+    color: #E2E5E8;
     padding: 11px 20px;
     border-radius: 9px;
-    border: 1px solid #e3d9ca;
     font-weight: 600;
     white-space: nowrap;
+    transition: 0.25s ease;
 }
 
 .nav-btn:hover {
-    background: #3f2a47;
-    color: #f0eada;
+    background-color: #34475C;
     text-decoration: none;
 }
 
@@ -49,7 +48,7 @@ h1 {
     text-align: center;
     font-size: 36px;
     margin-bottom: 28px;
-    color: #3f2a47;
+    color: #1E2A38;
     font-weight: 700;
 }
 
@@ -61,22 +60,23 @@ h1 {
     max-width: 600px;
     margin: 12px auto;
     padding: 14px 16px;
-    background: #fffdf8;
-    border: 1px solid #ded4c3;
+    background-color: #FFFFFF;
+    border: 1px solid #CCD2D8;
     border-radius: 11px;
     font-size: 16px;
-    color: #3f2a47;
+    color: #1E2A38;
     outline: none;
+    transition: 0.2s ease;
 }
 
 #title:focus,
 #description:focus {
-    border-color: #3f2a47;
-    box-shadow: 0 0 0 3px rgba(63, 42, 71, 0.08);
+    border-color: #1E2A38;
+    box-shadow: 0 0 0 3px rgba(30, 42, 56, 0.10);
 }
 
 input::placeholder {
-    color: #94879a;
+    color: #89939E;
 }
 
 /* ===== ADD TASK BUTTON ===== */
@@ -84,8 +84,8 @@ input::placeholder {
     display: block;
     margin: 18px auto 35px;
     padding: 13px 30px;
-    background: #3f2a47;
-    color: #f0eada;
+    background-color: #1E2A38;
+    color: #FFFFFF;
     border: none;
     border-radius: 10px;
     font-size: 15px;
@@ -95,8 +95,9 @@ input::placeholder {
 }
 
 #addBtn:hover {
-    background: #563b60;
+    background-color: #34475C;
     transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(30, 42, 56, 0.15);
 }
 
 /* ===== TASK CONTAINER ===== */
@@ -108,29 +109,29 @@ input::placeholder {
 
 /* ===== TASK CARDS ===== */
 .task {
-    background: #fffdf8;
-    border: 1px solid #e6ddce;
+    background-color: #FFFFFF;
+    border: 1px solid #CCD2D8;
     border-radius: 15px;
     padding: 22px;
     margin: 20px auto;
     width: 100%;
-    box-shadow: 0 4px 15px rgba(63, 42, 71, 0.06);
+    box-shadow: 0 4px 15px rgba(30, 42, 56, 0.06);
     transition: 0.25s ease;
 }
 
 .task:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(63, 42, 71, 0.10);
+    box-shadow: 0 8px 20px rgba(30, 42, 56, 0.12);
 }
 
 .task h3 {
     font-size: 20px;
     margin-bottom: 10px;
-    color: #3f2a47;
+    color: #1E2A38;
 }
 
 .task p {
-    color: #776b7b;
+    color: #536170;
     line-height: 1.6;
     margin-bottom: 12px;
 }
@@ -145,16 +146,16 @@ input::placeholder {
 }
 
 .badge.pending {
-    background: #f0eada;
-    color: #3f2a47;
+    background-color: #E2E5E8;
+    color: #1E2A38;
 }
 
 .badge.completed {
-    background: #e5dfeb;
-    color: #3f2a47;
+    background-color: #D2D9E0;
+    color: #1E2A38;
 }
 
-/* ===== TASK ACTIONS ===== */
+/* ===== TASK ACTION BUTTONS ===== */
 .task-actions {
     display: flex;
     gap: 10px;
@@ -166,8 +167,8 @@ input::placeholder {
     padding: 10px 19px;
     border: none;
     border-radius: 9px;
-    background: #3f2a47;
-    color: #f0eada;
+    background-color: #1E2A38;
+    color: #FFFFFF;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -175,22 +176,22 @@ input::placeholder {
 }
 
 .task-actions button:hover {
-    background: #563b60;
+    background-color: #34475C;
     transform: translateY(-2px);
 }
 
 /* ===== EMPTY MESSAGE ===== */
 .empty {
     text-align: center;
-    color: #776b7b;
+    color: #536170;
     padding: 25px;
-    background: #fffdf8;
+    background-color: #FFFFFF;
+    border: 1px solid #CCD2D8;
     border-radius: 12px;
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 650px) {
-
     body {
         padding: 20px 15px;
     }
