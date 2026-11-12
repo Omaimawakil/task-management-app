@@ -5,36 +5,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-   <div id="auth-section">
-  <h2>Authentication</h2>
+    <div class="top-bar">
+        <span id="userStatus">Guest mode (tasks saved on this device)</span>
+        <a href="login.html" id="loginLink" class="nav-btn">Login / Register</a>
+        <button id="logoutBtn" onclick="logout()" hidden>Logout</button>
+    </div>
 
-  <input type="text" id="name" placeholder="Name">
-
-  <input type="email" id="email" placeholder="Email">
-
-  <input type="password" id="password" placeholder="Password">
-
-  <div class="auth-buttons">
-    <button id="registerBtn">Register</button>
-    <button id="loginBtn">Login</button>
-</div>
-
-<div class="logout-button">
-    <button onclick="logout()">Logout</button>
-</div>
-</div>
     <h1>Task Manager</h1>
 
     <input type="text" id="title" placeholder="Task Title">
-
     <input type="text" id="description" placeholder="Description">
-
-    
     <button id="addBtn" onclick="addTask()">Add Task</button>
 
     <div id="tasks"></div>
 
     <script src="script.js"></script>
-    
 </body>
 </html>

@@ -1,211 +1,201 @@
-const API = "https://task-management-app-ayny.onrender.com/tasks"
-const registerBtn = document.getElementById("registerBtn");
-const loginBtn = document.getElementById("loginBtn");
+const BASE = location.hostname === "localhost" || location.hostname === "127.0.0.1"
+  ? "http://localhost:5000"
+  : "https://task-management-app-ayny.onrender.com";
+const API = `${BASE}/tasks`;
+const GUEST_KEY = "guestTasks";
 
-registerBtn.addEventListener("click", registerUser);
-loginBtn.addEventListener("click", loginUser);
+let currentTasks = [];
 
-async function registerUser() {
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+const getToken = () => localStorage.getItem("token");
+const isLoggedIn = () => !!getToken();
 
-  const res=await fetch("https://task-management-app-ayny.onrender.com/auth/register", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      name,
-      email,
-      password
-    })
-  });
-  if(!res.ok){
-    alert("Registeration failed");
-    return;
-  }
-  document.getElementById("name").value = "";
-document.getElementById("email").value = "";
-document.getElementById("password").value = "";
+/* ---------- helpers ---------- */
 
-  alert("Registration Successful");
-  
-  return;
+function authHeaders() {
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${getToken()}`
+  };
 }
 
-async function loginUser() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+function escapeHTML(str = "") {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
-  const res = await fetch("https://task-management-app-ayny.onrender.com/auth/login", {
+function getGuestTasks() {
+  try {
+    return JSON.parse(localStorage.getItem(GUEST_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveGuestTasks(tasks) {
+  localStorage.setItem(GUEST_KEY, JSON.stringify(tasks));
+}
+
+function updateAuthUI() {
+  document.getElementById("userStatus").textContent = isLoggedIn()
+    ? "Logged in"
+    : "Guest mode (tasks saved on this device)";
+  document.getElementById("loginLink").hidden = isLoggedIn();
+  document.getElementById("logoutBtn").hidden = !isLoggedIn();
+}
+
+/* ---------- data layer: guest (localStorage) or user (API) ---------- */
+
+async function fetchTasks() {
+  if (!isLoggedIn()) return getGuestTasks();
+
+  const res = await fetch(API, { headers: authHeaders() });
+  if (res.status === 401) {
+    // token expired/invalid -> fall back to guest mode
+    localStorage.removeItem("token");
+    updateAuthUI();
+    return getGuestTasks();
+  }
+  if (!res.ok) {
+    console.error("Failed to load tasks");
+    return [];
+  }
+  return res.json();
+}
+
+async function createTask(title, description) {
+  if (!isLoggedIn()) {
+    const tasks = getGuestTasks();
+    tasks.push({
+      _id: crypto.randomUUID(),
+      title,
+      description,
+      status: "Pending"
+    });
+    saveGuestTasks(tasks);
+    return true;
+  }
+
+  const res = await fetch(API, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      email,
-      password
-    })
+    headers: authHeaders(),
+    body: JSON.stringify({ title, description })
   });
-   if(!res.ok){
-    alert("Login failed. Check email and Password");
-    return;
-   }
-  const data = await res.json();
-  
-  if(!data.token){
-    alert("Token not recieved from server");
+  return res.ok;
+}
+
+async function patchTask(id, changes) {
+  if (!isLoggedIn()) {
+    const tasks = getGuestTasks().map(t =>
+      t._id === id ? { ...t, ...changes } : t
+    );
+    saveGuestTasks(tasks);
     return;
   }
 
-  localStorage.setItem("token", data.token);
-  document.getElementById("email").value = "";
-document.getElementById("password").value = "";
+  await fetch(`${API}/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(changes)
+  });
+}
 
-  alert("Login Successful");
+async function removeTask(id) {
+  if (!isLoggedIn()) {
+    saveGuestTasks(getGuestTasks().filter(t => t._id !== id));
+    return;
+  }
+
+  await fetch(`${API}/${id}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${getToken()}` }
+  });
+}
+
+/* ---------- UI actions ---------- */
+
+async function loadTasks() {
+  currentTasks = await fetchTasks();
+
+  const box = document.getElementById("tasks");
+
+  if (currentTasks.length === 0) {
+    box.innerHTML = `<p class="empty">No tasks yet. Add your first one above.</p>`;
+    return;
+  }
+
+  box.innerHTML = currentTasks
+    .map(task => {
+      const done = task.status === "Completed";
+      return `
+    <div class="task ${done ? "done" : ""}">
+        <h3>${escapeHTML(task.title)}</h3>
+        <p>${escapeHTML(task.description)}</p>
+        <span class="badge ${done ? "completed" : "pending"}">${escapeHTML(task.status)}</span>
+
+        <div class="task-actions">
+            ${done ? "" : `<button class="btn-complete" onclick="completeTask('${task._id}')">Complete</button>`}
+            <button class="btn-edit" onclick="editTask('${task._id}')">Edit</button>
+            <button class="btn-delete" onclick="deleteTask('${task._id}')">Delete</button>
+        </div>
+    </div>`;
+    })
+    .join("");
+}
+async function addTask() {
+  const title = document.getElementById("title").value.trim();
+  const description = document.getElementById("description").value.trim();
+
+  if (!title) {
+    alert("Please enter a task title");
+    return;
+  }
+
+  const ok = await createTask(title, description);
+  if (!ok) {
+    alert("Failed to add task");
+    return;
+  }
+
+  document.getElementById("title").value = "";
+  document.getElementById("description").value = "";
   loadTasks();
 }
 
-async function loadTasks() {
+async function editTask(id) {
+  const task = currentTasks.find(t => t._id === id);
+  if (!task) return;
 
-    const token = localStorage.getItem("token");
-    if(!token){
-        return;
-    }
+  const newTitle = prompt("Edit task title", task.title);
+  if (newTitle === null || !newTitle.trim()) return;
 
-const response = await fetch(API, {
-    headers: {
-        Authorization:`Bearer ${token}`
-    }
-});
-if(!response.ok){
-    console.error("Failed to load tasks");
-    return;
-}
-    const tasks = await response.json();
+  const newDescription = prompt("Edit description", task.description || "");
+  if (newDescription === null) return;
 
-   document.getElementById("tasks").innerHTML =
-    tasks.map(task => `
-    <div class="task">
-        <h3>${task.title}</h3>
-        <p>${task.description}</p>
-        <p>Status: ${task.status}</p>
-
-        <button onclick="completeTask('${task._id}')">
-            Complete
-        </button>
-        <button onclick="editTask('${task._id}')">
-             Edit
-        </button>
-        <button onclick="deleteTask('${task._id}')">
-            Delete
-        </button>
-    </div>
-`).join("");
+  await patchTask(id, {
+    title: newTitle.trim(),
+    description: newDescription.trim()
+  });
+  loadTasks();
 }
 
-async function addTask() {
-
-    const title =
-        document.getElementById("title").value;
-
-    const description =
-        document.getElementById("description").value;
-
-    const token = localStorage.getItem("token");
-    if(!token){
-        alert("Please log in first");
-        return;
-    }
-
-    const  res =await fetch(API,{
-        method:"POST",
-        headers:{
-    "Content-Type":"application/json",
-    Authorization:`Bearer ${token}`
-    },
-        body:JSON.stringify({
-            title,
-            description
-        })
-    });
-    if(!res.ok){
-      alert("Failed to add task");
-      return;
-    }
-    document.getElementById("title").value = "";
-document.getElementById("description").value = "";
-
-    loadTasks();
-}
-async function editTask(id){
-
-    const newTitle =
-    prompt("Enter new task title");
-
-    if(!newTitle) return;
-
-    const token = localStorage.getItem("token");
-    if(!token){
-        alert("Please log in first");
-        return;
-    }
-
-
-    await fetch(`${API}/${id}`,{
-        method:"PUT",
-        headers:{
-            "Content-Type":"application/json",
-           Authorization:`Bearer ${token}`
-        },
-        body:JSON.stringify({
-            title:newTitle
-        })
-    });
-
-    loadTasks();
+async function completeTask(id) {
+  await patchTask(id, { status: "Completed" });
+  loadTasks();
 }
 
-async function deleteTask(id){
-    const token = localStorage.getItem("token");
-    if(!token){
-        alert("Please log in first");
-        return;
-    }
-
-    await fetch(`${API}/${id}`,{
-        method:"DELETE",
-    headers:{
-     Authorization:`Bearer ${token}`
-    },
-    });
-
-    loadTasks();
+async function deleteTask(id) {
+  await removeTask(id);
+  loadTasks();
 }
 
-async function completeTask(id){
-    const token = localStorage.getItem("token");
-    if(!token){
-        alert("Please log in first");
-        return;
-    }
-
-    await fetch(`${API}/${id}`,{
-        method:"PUT",
-        headers:{
-            "Content-Type":"application/json",
-            Authorization:`Bearer ${token}`
-        },
-        body:JSON.stringify({
-            status:"Completed"
-        })
-    });
-
-    loadTasks();
-}
 function logout() {
-    localStorage.removeItem("token");
-    location.reload();
+  localStorage.removeItem("token");
+  location.reload();
 }
+
+updateAuthUI();
 loadTasks();

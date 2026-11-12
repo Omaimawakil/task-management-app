@@ -1,77 +1,219 @@
-body{
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
+/* ===== GENERAL ===== */
+* {
     margin: 0;
-    padding: 30px;
-}
-
-h1{
-    text-align: center;
-    color: #333;
-    margin-bottom: 30px;
-}
-
-input{
-    display: block;
-    width: 100%;
-    max-width: 500px;
-    margin: 10px auto;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    padding: 0;
     box-sizing: border-box;
 }
 
-button{
-    padding: 10px 15px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin: 5px;
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f0eada;
+    color: #3f2a47;
+    min-height: 100vh;
+    padding: 25px 20px 50px;
 }
 
-button:hover{
-    opacity: 0.9;
-}
-
-.task{
-    background: white;
-    max-width: 550px;
-    margin: 15px auto;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.task h3{
-    margin-top: 0;
-    color: #222;
-}
-
-.task p{
-    color: #555;
-    margin: 8px 0;
-}
-
-#tasks{
-    margin-top: 25px;
-}
-#addBtn{
-    display: block;
-    margin: 15px auto;
-}
-
-.auth-buttons{
+/* ===== TOP BAR ===== */
+.top-bar {
+    max-width: 700px;
+    margin: 0 auto 35px;
     display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 10px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    font-size: 15px;
 }
 
-.logout-button{
-    text-align: center;
-    margin-top: 10px;
+#userStatus {
+    color: #75677a;
 }
-#auth-section h2{
+
+.nav-btn {
+    background: #fffdf8;
+    color: #3f2a47;
+    padding: 11px 20px;
+    border-radius: 9px;
+    border: 1px solid #e3d9ca;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.nav-btn:hover {
+    background: #3f2a47;
+    color: #f0eada;
+    text-decoration: none;
+}
+
+/* ===== HEADING ===== */
+h1 {
     text-align: center;
+    font-size: 36px;
+    margin-bottom: 28px;
+    color: #3f2a47;
+    font-weight: 700;
+}
+
+/* ===== INPUT FIELDS ===== */
+#title,
+#description {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    margin: 12px auto;
+    padding: 14px 16px;
+    background: #fffdf8;
+    border: 1px solid #ded4c3;
+    border-radius: 11px;
+    font-size: 16px;
+    color: #3f2a47;
+    outline: none;
+}
+
+#title:focus,
+#description:focus {
+    border-color: #3f2a47;
+    box-shadow: 0 0 0 3px rgba(63, 42, 71, 0.08);
+}
+
+input::placeholder {
+    color: #94879a;
+}
+
+/* ===== ADD TASK BUTTON ===== */
+#addBtn {
+    display: block;
+    margin: 18px auto 35px;
+    padding: 13px 30px;
+    background: #3f2a47;
+    color: #f0eada;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+#addBtn:hover {
+    background: #563b60;
+    transform: translateY(-2px);
+}
+
+/* ===== TASK CONTAINER ===== */
+#tasks {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ===== TASK CARDS ===== */
+.task {
+    background: #fffdf8;
+    border: 1px solid #e6ddce;
+    border-radius: 15px;
+    padding: 22px;
+    margin: 20px auto;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(63, 42, 71, 0.06);
+    transition: 0.25s ease;
+}
+
+.task:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(63, 42, 71, 0.10);
+}
+
+.task h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #3f2a47;
+}
+
+.task p {
+    color: #776b7b;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+/* ===== STATUS BADGES ===== */
+.badge {
+    display: inline-block;
+    padding: 6px 13px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.badge.pending {
+    background: #f0eada;
+    color: #3f2a47;
+}
+
+.badge.completed {
+    background: #e5dfeb;
+    color: #3f2a47;
+}
+
+/* ===== TASK ACTIONS ===== */
+.task-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 5px;
+}
+
+.task-actions button {
+    padding: 10px 19px;
+    border: none;
+    border-radius: 9px;
+    background: #3f2a47;
+    color: #f0eada;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.task-actions button:hover {
+    background: #563b60;
+    transform: translateY(-2px);
+}
+
+/* ===== EMPTY MESSAGE ===== */
+.empty {
+    text-align: center;
+    color: #776b7b;
+    padding: 25px;
+    background: #fffdf8;
+    border-radius: 12px;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 650px) {
+
+    body {
+        padding: 20px 15px;
+    }
+
+    .top-bar {
+        font-size: 13px;
+        gap: 8px;
+    }
+
+    h1 {
+        font-size: 29px;
+    }
+
+    #title,
+    #description {
+        max-width: 100%;
+    }
+
+    .task {
+        padding: 18px;
+    }
+
+    .task-actions {
+        gap: 7px;
+    }
 }
